@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Modelo secuancial</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+</head>
+<body>
+
+</body>
+<script>
+    let xs = [
+        [0],
+        [1],
+        [2],
+        [3]
+    ];
+    let ys = [
+        [0],
+        [3],
+        [6],
+        [9]
+    ];
+    let inputs = tf.tensor2d(xs);
+    let outputs = tf.tensor2d(ys);
+
+    async function createModel() {
+        const model = tf.sequential();
+
+        const hidden = tf.layers.dense({
+            units: 50,
+            inputShape: [1],
+            activation: 'linear'
+        });
+        model.add(hidden);
+
+        const output = tf.layers.dense({
+            units: 1,
+            inputShape: [50],
+            activation: 'linear'
+        })
+        model.add(output);
+
+        model.compile({
+            optimizer: 'sgd',
+            loss: 'meanSquaredError'
+        });
+        const configTrain = {
+            epochs: 100
+        };
+        const h = await model.fit(inputs, outputs, configTrain)
+        console.log(h);
+        let prediction = model.predict(tf.tensor2d(
+            [[10]]
+        ))
+        prediction.print();
+        //outputs.print();
+    }
+    createModel();
+
+</script>
+</html>
